@@ -1,0 +1,21 @@
+name: Prefix issue title
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            if (!issue.title.startsWith("ETBE-")) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                title: `ETBE-${issue.number} ${issue.title}`
+              });
+            }

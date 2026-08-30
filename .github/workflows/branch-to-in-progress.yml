@@ -1,0 +1,51 @@
+name: Move Issue to In Progress on Branch Creation from Issue itself
+
+on:
+  create: # Triggers whenever a branch or tag is created
+
+jobs:
+  move-card:
+    if: github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Extract the issue number
+      - name: Extract Issue Number
+        id: extract_issue
+        run: |
+          BRANCH_NAME="${{ github.event.ref }}"
+          BRANCH_NAME="${BRANCH_NAME#refs/heads/}"
+          if [[ $BRANCH_NAME =~ ^etbe-([0-9]+) ]]; then
+            echo "issue_number=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Step 2: Set Status to In Progress
+      - name: Move to In Progress
+        if: steps.extract_issue.outputs.issue_number != ''
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_AUTOMATION_TOKEN }}
+        run: |
+          ISSUE_NODE_ID=$(gh api repos/${{ github.repository }}/issues/${{ steps.extract_issue.outputs.issue_number }} --jq .node_id)
+
+          ITEM_ID=$(gh api graphql -f query='
+            query($issue:ID!) {
+              node(id:$issue) {
+                ... on Issue {
+                  projectItems(first:10) {
+                    nodes { id project { id } }
+                  }
+                }
+              }
+            }' -f issue="$ISSUE_NODE_ID" --jq '.data.node.projectItems.nodes[] | select(.project.id=="PVT_kwHOB9PZ_c4Bh2kf") | .id')
+
+          if [ -z "$ITEM_ID" ]; then
+            echo "Issue not on project board — skipping."
+            exit 0
+          fi
+
+          gh api graphql -f query='
+            mutation($project:ID!, $item:ID!, $field:ID!, $option:String!) {
+              updateProjectV2ItemFieldValue(input:{
+                projectId:$project, itemId:$item, fieldId:$field,
+                value:{ singleSelectOptionId:$option }
+              }) { projectV2Item { id } }
+            }' -f project=PVT_kwHOB9PZ_c4Bh2kf -f item="$ITEM_ID" -f field=PVTSSF_lAHOB9PZ_c4Bh2kfzhgwvwI -f option=47fc9ee4
