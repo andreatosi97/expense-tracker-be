@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Project element = top-lvl element of the object model, containing all info-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<!-- Version of object model -->
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.0.6</version>
+		<!-- Path to the parent pom.xml file within the checkout, if we want Maven
+			to lookup in the filesystem. Empty disables lookup = resolve from repos -->
+		<relativePath/>
+	</parent>
+
+	<!-- Coordinates of the project -->
+	<groupId>com.imatcoding</groupId> <!-- Identifier of the organization -->
+	<artifactId>expense-tracker</artifactId> <!-- Name of the primary artifact being generated -->
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>Expense Tracker</name>
+	<description>Expense tracker BE built using Spring Boot 4.0.6</description>
+	<url/> <!-- Project website/repo/deploy url (GitHub/Nexus/...) -->
+
+	<!-- List of licenses/legal permissions that apply to the project -->
+	<licenses>
+		<license/>
+	</licenses>
+
+	<!-- Commiters of the project -->
+	<developers>
+		<developer/>
+	</developers>
+
+	<!-- Source code management metadata -->
+	<scm>
+		<connection/> <!-- Read-only repo url (clone) -->
+		<developerConnection/> <!-- Read-write repo url (push) -->
+		<tag/>
+		<url/> <!-- Browsable repo url -->
+	</scm>
+
+	<!-- Info for site and artifact deployment (settings.xml for authentication) -->
+	<distributionManagement/>
+
+	<!-- Placeholders -->
+	<properties>
+		<java.version>21</java.version>
+	</properties>
+
+	<!-- To centralize dependencies info: managed dependencies = default info =>
+		1. in parent to be inherited, 2. for transient dependencies, 3. imported
+		to "inherit" from multiple projects.
+		These aren't immediately resolved, only if they are specified -->
+	<dependencyManagement>
+		<dependencies/>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<!-- To limit transitivity of a dependency: define in which classpath
+				the dependency goes -->
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<!-- Build process config: customize compile/package steps beyond defaults -->
+	<build>
+		<!-- Build-time plugins added to Build Extensions classloader, run during
+			build and not phase-bound -->
+		<extensions/>
+
+		<!-- List of filter properties files used when filtering is enabled -->
+		<filters/>
+
+		<!-- Default plugins information, not resolved or bound to lifecycle unless referenced-->
+		<pluginManagement>
+			<plugins/>
+		</pluginManagement>
+
+		<!-- Build-task executors bound to lifecycle phases: each plugin has
+			goals executed at specific phases -->
+		<plugins>
+			<!-- Example: Repackages into executable jar with embedded deps + launcher
+				Supports run/start/stop goals for local execution, builds OCI/Docker images -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+
+				<!-- To bind to lifecycle phases
+				<executions>
+				 	<execution>
+				 		<id>[id]</id>
+				 		<phase>[phase name][pos]</phase>
+				 		<goals>
+				 			<goal>[goal 1]</goal>
+				 			<goal>[goal 2]</goal>
+						<goals>
+					</execution>
+				</executions>
+				-->
+
+				<!-- <dependencies/> To add dependencies to Plugin classloader -->
+				<!-- <configuration/> Specify the properties that the Mojo plugin may expect as DOM type -->
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- List of project-local build profiles which modify the build process
+		when activated by env, CLI flag or property
+		Can override: dependencies, plugins, properties, resource dirs -->
+	<profiles>
+		<profile>
+			<id>dev</id>
+            <!-- <activation/> Define when it's activated -->
+            <!-- <build/> Define build settings for this profile -->
+		</profile>
+	</profiles>
+
+</project>
