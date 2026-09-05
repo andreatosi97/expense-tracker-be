@@ -1,0 +1,6 @@
+# Runtime configuration/properties read by Spring at startup, accessed via
+# @Value("${property.name}") or @ConfigurationProperties(prefix = "property.prefix")
+
+spring:
+  application:
+    name: expense-tracker

@@ -1,0 +1,5 @@
+; Tells Git how to handle files (e.g., line endings and file attributes)
+; Ex: text = treat as text, eol=lf = store and check out with LF \n for line endings
+
+/mvnw text eol=lf
+*.cmd text eol=crlf
