@@ -70,6 +70,13 @@
 				the dependency goes -->
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Swagger dependency -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<!-- Build process config: customize compile/package steps beyond defaults -->
