@@ -111,6 +111,23 @@
 				<!-- <dependencies/> To add dependencies to Plugin classloader -->
 				<!-- <configuration/> Specify the properties that the Mojo plugin may expect as DOM type -->
 			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals><goal>prepare-agent</goal></goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals><goal>report</goal></goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -118,10 +135,39 @@
 		when activated by env, CLI flag or property
 		Can override: dependencies, plugins, properties, resource dirs -->
 	<profiles>
+		<!-- Example:
 		<profile>
-			<id>dev</id>
-            <!-- <activation/> Define when it's activated -->
-            <!-- <build/> Define build settings for this profile -->
+			<id>profileId</id>
+            <activation/> Define when it's activated
+            <build/> Define build settings for this profile
+		</profile>
+		-->
+
+		<profile>
+			<id>run-sonar</id>
+			<properties>
+				<sonar.organization>andreatosi97</sonar.organization>
+				<sonar.projectKey>andreatosi97_expense-tracker-be</sonar.projectKey>
+				<!-- Makes build fail when quality gate fail -->
+				<sonar.qualitygate.wait>true</sonar.qualitygate.wait>
+				<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonarsource.scanner.maven</groupId>
+						<artifactId>sonar-maven-plugin</artifactId>
+						<version>5.7.0.6970</version>
+						<executions>
+							<execution>
+								<id>sonar-analysis</id>
+								<phase>verify</phase>
+								<goals><goal>sonar</goal></goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 
