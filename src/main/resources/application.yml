@@ -4,3 +4,6 @@
 spring:
   application:
     name: expense-tracker
+
+jwt:
+    secret: ${JWT_SECRET_KEY}
