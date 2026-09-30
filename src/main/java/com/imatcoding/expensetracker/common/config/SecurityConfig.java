@@ -20,7 +20,8 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/error"
+            "/error",
+            "/api/auth/login"
     };
 
     // SecurityFilterChain: interface with 1 getFilters returning an ordered list
