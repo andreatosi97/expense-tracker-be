@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
 
 @Component
 public class JwtUtil {
 
     private static final long EXPIRATION_MINUTES = 5;
-    private static final long EXPIRATION_MILLIS = 1000 * 60 * EXPIRATION_MINUTES;
+    private static final Duration EXPIRATION = Duration.ofMinutes(EXPIRATION_MINUTES);
 
     @Value("${jwt.secret}")
     private String secret;
@@ -26,10 +27,13 @@ public class JwtUtil {
     }
 
     public String generateToken(String username) {
+        Instant now = Instant.now();
         return Jwts.builder()
                 .subject(username)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_MILLIS))
+                .claims()
+                    .add(Claims.ISSUED_AT, now.getEpochSecond())
+                    .add(Claims.EXPIRATION, now.plus(EXPIRATION).getEpochSecond())
+                    .and()
                 .signWith(key)
                 .compact();
     }
