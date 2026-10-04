@@ -1,5 +1,6 @@
 package com.imatcoding.expensetracker.common.config;
 
+import com.imatcoding.expensetracker.common.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,7 +31,7 @@ public class SecurityConfig {
     //      applies to => can have different chains (set by http.securityMatche(...))
     // HttpSecurity: Builder object configured to produce SecurityFilterChain
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtUtil jwtUtil) {
         http
                 // configures SessionManagementFilter and session-creation behavior
                 .sessionManagement(sess -> sess
@@ -46,7 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
