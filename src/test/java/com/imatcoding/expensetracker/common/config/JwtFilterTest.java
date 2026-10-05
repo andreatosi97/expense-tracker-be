@@ -13,7 +13,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +41,7 @@ class JwtFilterTest {
     void doFilterInternal_noHeader() throws Exception {
         jwtFilter.doFilterInternal(req, res, chain);
 
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
         verify(chain).doFilter(req, res);
         verifyNoInteractions(jwtUtil);
     }
@@ -52,7 +52,7 @@ class JwtFilterTest {
 
         jwtFilter.doFilterInternal(req, res, chain);
 
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
         verify(chain).doFilter(req, res);
         verifyNoInteractions(jwtUtil);
     }
@@ -64,7 +64,7 @@ class JwtFilterTest {
 
         jwtFilter.doFilterInternal(req, res, chain);
 
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
         verify(chain).doFilter(req, res);
     }
 
@@ -77,8 +77,8 @@ class JwtFilterTest {
         jwtFilter.doFilterInternal(req, res, chain);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        assertNotNull(auth);
-        assertEquals("username-test", auth.getName());
+        assertThat(auth).isNotNull();
+        assertThat(auth.getName()).isEqualTo("username-test");
         verify(chain).doFilter(req, res);
     }
 }

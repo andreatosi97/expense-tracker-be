@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class JwtUtilTest {
 
@@ -20,30 +20,30 @@ class JwtUtilTest {
     @Test
     void generateToken_shouldContainUsername() {
         String token = jwtUtil.generateToken("username-test");
-        assertEquals("username-test", jwtUtil.extractUsername(token));
+        assertThat(jwtUtil.extractUsername(token)).isEqualTo("username-test");
     }
 
     @Test
     void isValid_shouldReturnTrueForFreshToken() {
         String token = jwtUtil.generateToken("username-test");
-        assertTrue(jwtUtil.isValid(token));
+        assertThat(jwtUtil.isValid(token)).isTrue();
     }
 
     @Test
     void isValid_shouldReturnFalseForMalformedToken() {
-        assertFalse(jwtUtil.isValid("not.a.valid.token"));
+        assertThat(jwtUtil.isValid("not.a.valid.token")).isFalse();
     }
 
     @Test
     void isValid_shouldReturnFalseForExpiredToken() {
         String expiredToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VybmFtZS10ZXN0IiwiaWF0IjoxNzkwMjYyNDg4LCJleHAiOjE3OTAyNjI3ODh9.GAtS3cngc5y8KQxP5y6Q1ev_WtKkxcAEwnmyeSeygLY";
-        assertFalse(jwtUtil.isValid(expiredToken));
+        assertThat(jwtUtil.isValid(expiredToken)).isFalse();
     }
 
     @Test
     void isValid_shouldReturnFalseForTamperedToken() {
         String token = jwtUtil.generateToken("username-test");
         String tampered = token.substring(0, token.length() - 5) + "xxxxx";
-        assertFalse(jwtUtil.isValid(tampered));
+        assertThat(jwtUtil.isValid(tampered)).isFalse();
     }
 }
