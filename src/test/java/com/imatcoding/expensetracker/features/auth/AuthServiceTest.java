@@ -15,7 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,16 +48,16 @@ class AuthServiceTest {
 
         String token = authService.login(username, password);
 
-        assertEquals(expectedToken, token);
+        assertThat(token).isEqualTo(expectedToken);
         verify(jwtUtil).generateToken(username);
 
         // AuthenticationManager argument checks
         ArgumentCaptor<Authentication> captor = ArgumentCaptor.forClass(Authentication.class);
         verify(authManager).authenticate(captor.capture());
         Authentication authentication = captor.getValue();
-        assertInstanceOf(UsernamePasswordAuthenticationToken.class, authentication);
-        assertEquals(username, authentication.getPrincipal());
-        assertEquals(password, authentication.getCredentials());
+        assertThat(authentication).isInstanceOf(UsernamePasswordAuthenticationToken.class);
+        assertThat(authentication.getPrincipal()).isEqualTo(username);
+        assertThat(authentication.getCredentials()).isEqualTo(password);
     }
 
     @Test
@@ -67,10 +68,9 @@ class AuthServiceTest {
         when(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(ex);
 
-        BadCredentialsException thrown = assertThrows(BadCredentialsException.class,
-                () -> authService.login(username, password));
+        assertThatThrownBy(() -> authService.login(username, password))
+                .isSameAs(ex);
 
-        assertSame(ex, thrown);
         verify(authManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verifyNoInteractions(jwtUtil);
     }
